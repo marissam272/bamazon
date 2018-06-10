@@ -15,6 +15,8 @@ var connection = mysql.createConnection({
   database: "bamazonDB"
 });
 
+
+// creating connection with response
 var sqlCommand = 'SELECT * FROM products';
 connection.connect(function(err) {
     if (err) {
@@ -33,7 +35,7 @@ connection.connect(function(err) {
     });
 })
 
-
+// displaying items for sale 
 function queryAllProducts() {
     connection.query("SELECT * FROM products", function(err, res) {
       for (var i = 0; i < res.length; i++) {
@@ -45,6 +47,24 @@ function queryAllProducts() {
 
   queryAllProducts();
 
+
+  function productSearch() {
+    inquirer
+      .prompt({
+        name: "product",
+        type: "input",
+        message: "What product would you like to buy?"
+      })
+      .then(function(answer) {
+        var query = "SELECT product_name FROM products WHERE ?";
+        connection.query(query, { product: answer.product_name }, function(err, res) {
+          for (var i = 0; i < res.length; i++) {
+            console.log("Product: " + res[i].product_name + " || Song: " + res[i].song + " || Year: " + res[i].year);
+          }
+          runSearch();
+        });
+      });
+  }
 
 
 //   connection.connect(function(err) {
@@ -58,7 +78,7 @@ function queryAllProducts() {
 //     .prompt({
 //       name: "action",
 //       type: "list",
-//       message: "What would you like to do?",
+//       message: "What would you like to buy?",
 //       choices: [
 //         "Find songs by artist",
 //         "Find all artists who appear more than once",
