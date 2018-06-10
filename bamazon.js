@@ -15,41 +15,74 @@ var connection = mysql.createConnection({
   database: "bamazonDB"
 });
 
+var sqlCommand = 'SELECT * FROM products';
 connection.connect(function(err) {
-  if (err) throw err;
-  runSearch();
-});
+    if (err) {
+        console.error('connection.js:  ', err);
+    }
 
-function runSearch() {
-  inquirer
-    .prompt({
-      name: "action",
-      type: "list",
-      message: "What would you like to do?",
-      choices: [
-        "Find songs by artist",
-        "Find all artists who appear more than once",
-        "Find data within a specific range",
-        "Search for a specific song"
-      ]
-    })
-    .then(function(answer) {
-      switch (answer.action) {
-      case "Find songs by artist":
-        artistSearch();
-        break;
+    console.log('connected to bamazon! ', connection.threadId);
 
-      case "Find all artists who appear more than once":
-        multiSearch();
-        break;
+    connection.query(sqlCommand, function(err,response){
 
-      case "Find data within a specific range":
-        rangeSearch();
-        break;
+        if (err) {
+            console.error('connection.js:  ', err);}
 
-      case "Search for a specific song":
-        songSearch();
-        break;
-      }
+            console.log('response:  ', response);
+            connection.end();
     });
-}
+})
+
+
+function queryAllProducts() {
+    connection.query("SELECT * FROM products", function(err, res) {
+      for (var i = 0; i < res.length; i++) {
+        console.log(res[i].id + " | " + res[i].product_name + " | " + res[i].department_name + " | " + res[i].price + " | " + res[i].stock_quantity);
+      }
+      console.log("-----------------------------------");
+    });
+  }
+
+  queryAllProducts();
+
+
+
+//   connection.connect(function(err) {
+//     if (err) throw err;
+//   //   runSearch();
+//   console.log("did this work?");
+//   });
+
+// function runSearch() {
+//   inquirer
+//     .prompt({
+//       name: "action",
+//       type: "list",
+//       message: "What would you like to do?",
+//       choices: [
+//         "Find songs by artist",
+//         "Find all artists who appear more than once",
+//         "Find data within a specific range",
+//         "Search for a specific song"
+//       ]
+//     })
+//     .then(function(answer) {
+//       switch (answer.action) {
+//       case "Find songs by artist":
+//         artistSearch();
+//         break;
+
+//       case "Find all artists who appear more than once":
+//         multiSearch();
+//         break;
+
+//       case "Find data within a specific range":
+//         rangeSearch();
+//         break;
+
+//       case "Search for a specific song":
+//         songSearch();
+//         break;
+//       }
+//     });
+// }
