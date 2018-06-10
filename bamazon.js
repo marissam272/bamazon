@@ -53,8 +53,15 @@ function queryAllProducts() {
       .prompt({
         name: "product",
         type: "input",
-        message: "What product would you like to buy?"
-      })
+        message: "What product would you like to buy?",
+        choices: ["diapers", "granola bars", "shaving cream", "coffee", "formula", "cat food", "Javascript for Kids", "toothpaste", "pens", "scissors"]
+      },
+    {
+        name: "quantity",
+        type: "input",
+        message: "How many of that item would you like to buy?"
+    }
+    )
       .then(function(answer) {
         var query = "SELECT product_name FROM products WHERE ?";
         connection.query(query, { product: answer.product_name }, function(err, res) {
