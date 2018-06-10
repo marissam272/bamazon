@@ -66,9 +66,18 @@ function queryAllProducts() {
         var query = "SELECT product_name FROM products WHERE ?";
         connection.query(query, { product: answer.product_name }, function(err, res) {
           for (var i = 0; i < res.length; i++) {
+            if (answer.quantity <= res[i].stock_quantity){
+                console.log("Order fulfulled!");
+                // update sql database to reflect remaining quantity
+                // show cusotmer total cost of their purchase
+            } else {
+                console.log("Insufficiant quantity!");
+                console.log("Order not placed. Please order another quantity");
+            }
+
             console.log("Product: " + res[i].product_name + " || Song: " + res[i].song + " || Year: " + res[i].year);
           }
-          runSearch();
+          productSearch();
         });
       });
   }
