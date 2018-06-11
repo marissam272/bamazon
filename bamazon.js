@@ -63,24 +63,30 @@ function queryAllProducts() {
     }
     )
       .then(function(answer) {
-        var query = "SELECT product_name FROM products WHERE ?";
-        connection.query(query, { product: answer.product_name }, function(err, res) {
-          for (var i = 0; i < res.length; i++) {
-            if (answer.quantity <= res[i].stock_quantity){
-                console.log("Order fulfulled!");
-                // update sql database to reflect remaining quantity
-                // show cusotmer total cost of their purchase
-            } else {
-                console.log("Insufficiant quantity!");
-                console.log("Order not placed. Please order another quantity");
-            }
+        var query = "SELECT item_id, product_name, department_name, price, stock_quantity FROM products WHERE ?";
+        connection.query(query, { product: answer.product }, 
+            function(err, res) {
+                if (err) throw err;
+        //   for (var j = 0; j < res.length; j++) {
+            if (res[0].stock_quantity < answer.quantity) {
+                console.log("Insufficient quantity!");
+                // console.log("there are", ${res[0].stock_quantity}, "available in stock");
+                // whichProductWouldYouLike();
+                // return;
 
-            console.log("Product: " + res[i].product_name + " || Song: " + res[i].song + " || Year: " + res[i].year);
-          }
-          productSearch();
-        });
+            } else {
+                var totalCost = answer.quantity * res[0].price;
+                console.log("order fulfilled!");
+                // var newStockQuant = res[0].stock_quantity - answer.howMany;
+                // connection.query("UPDATE products SET stock_quantity = ? WHERE item_id = ?", [newStockQuant, answer.whichId], function(err, res) {
+                //     if (err) throw err;
+            }
+                });
+            
       });
-  }
+  
+
+  productSearch();
 
 
 //   connection.connect(function(err) {
